@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from './core';
-import { ToastItem } from './types';
+import { ToastItem, ToastItemStatus } from './types';
 import styled from 'styled-components';
 
 type Props = ToastItem;
 
 const ANIMATION_DELAY = 300;
 
-const Toast = ({ id, message, delay, typeOption }: Props) => {
+const Toast = ({ id, message, delay, typeOption, status }: Props) => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeStampRef = useRef<number>(-1);
   const remainRef = useRef<number>(delay ?? -1);
@@ -17,13 +17,35 @@ const Toast = ({ id, message, delay, typeOption }: Props) => {
 
   const removeMe = () => toast.remove(id);
 
-  const pauseTimer = () => setPaused(true);
+  const disappear = () => {
+    toast.update(id, { status: 'removed' });
 
-  const resumeTimer = () => setPaused(false);
+    setTimeout(() => {
+      removeMe();
+    }, ANIMATION_DELAY * 1000);
+  };
+
+  const pause = () => {
+    if (delay === null || delay === undefined || delay <= 0) return;
+
+    setPaused(true);
+
+    remainRef.current -= Date.now() - timeStampRef.current;
+  };
+
+  const resume = () => {
+    setPaused(false);
+
+    timeStampRef.current = Date.now();
+  };
 
   const animateTimer = useCallback(() => {
-    const runningTime = Date.now() - timeStampRef.current;
-    const nextPercent = Math.max(0, runningTime / remainRef.current);
+    if (delay === null || delay === undefined || delay <= 0) return;
+
+    const offset = delay - remainRef.current;
+    const runningTime = Date.now() - timeStampRef.current + offset;
+
+    const nextPercent = Math.min(Math.max(0, runningTime / delay), 1);
 
     setProgress(nextPercent);
 
@@ -33,22 +55,23 @@ const Toast = ({ id, message, delay, typeOption }: Props) => {
   useEffect(() => {
     if (delay === null || paused) return;
 
+    if (status === 'removed') return;
+
     timeStampRef.current = Date.now();
 
-    timerRef.current = setTimeout(() => removeMe(), remainRef.current);
+    timerRef.current = setTimeout(() => disappear(), remainRef.current);
     rafRef.current = requestAnimationFrame(animateTimer);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [paused, delay]);
+  }, [paused, delay, status]);
 
   return (
-    <Container onMouseEnter={pauseTimer} onMouseLeave={resumeTimer}>
-      <CloseButton onClick={removeMe}>x</CloseButton>
+    <Container onMouseEnter={pause} onMouseLeave={resume}>
+      <CloseButton onClick={disappear}>x</CloseButton>
       {progress}
-      {message}
       {message}
     </Container>
   );
