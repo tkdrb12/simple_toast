@@ -10,8 +10,6 @@
 
 - [x] showToastMessage 함수를 만들고 Button을 통해 실행 가능하도록 하여야 한다.
 
-Advanced features (Optional)
-
 - [x] Toast Message에 마우스를 올려놓는 경우 autoClose delay를 일시 정지한다.
 
 - [x] autoClose의 진행상태를 보여주는 Progress bar를 제공한다
@@ -21,3 +19,7 @@ Advanced features (Optional)
 - [x] Toast Message의 Status variation(Success, Warning, Error)을 제공한다.
 
 # 테스트용 동영상
+
+
+https://github.com/user-attachments/assets/4f83855d-9088-45b8-8c43-7c8b6fc333a0
+
