@@ -1,3 +1,11 @@
+# 사용예시
+```tsx
+<div>
+  <ToastContainer pos="bottom-center" />
+  <button onClick={() => toast.add('안녕하세요!', 'info', 3000)}>Show Toast</button>
+</div>
+```
+
 # 요구사항
 
 - [x] 이미 만들어진 Toast 라이브러리를 사용하지 않고 직접 개발하여야 한다.
