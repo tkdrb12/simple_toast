@@ -7,6 +7,7 @@ export type ToastItem = {
   id: number;
   typeOption?: TypeOptions;
   delay?: number | null;
+  status?: ToastItemStatus;
 };
 
 export type Listener = React.Dispatch<React.SetStateAction<ToastItem[]>>;
