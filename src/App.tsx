@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 import { ToastContainer, toast } from './@shared/Toast';
 import { ToastPos, TypeOptions } from './@shared/Toast/types';
 
 function App() {
   const [pos, setPos] = useState<ToastPos>('top-right');
+  const [delay, setDelay] = useState<number | null>(3000);
 
   const showToastMessage = (
     message: string,
@@ -13,13 +14,29 @@ function App() {
     toast.add(message, typeOption ?? 'info', delay);
   };
 
-  const clearToast = () => {
-    toast.clear();
+  const clearToast = () => toast.clear();
+
+  const handleChangeDelay: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.value === '') {
+      setDelay(null);
+
+      return;
+    }
+
+    const number = Number(e.target.value);
+
+    if (Number.isNaN(number)) return;
+
+    setDelay(number);
   };
 
   return (
-    <div className="App">
-      <button onClick={() => showToastMessage('테스트용 메시지입니다.')}>
+    <div className="App" style={{ padding: '30px' }}>
+      <button
+        onClick={() =>
+          showToastMessage('테스트용 메시지입니다.', 'info', delay)
+        }
+      >
         info
       </button>
       <button
@@ -33,7 +50,9 @@ function App() {
       >
         warn
       </button>
-      <button onClick={() => showToastMessage('성공 메시지입니다.', 'success')}>
+      <button
+        onClick={() => showToastMessage('성공 메시지입니다.', 'success', delay)}
+      >
         success
       </button>
       <button onClick={() => clearToast()}>clear</button>
@@ -45,6 +64,7 @@ function App() {
         <option value="bottom-center">bottom-center</option>
         <option value="bottom-right">bottom-right</option>
       </select>
+      <input defaultValue={3000} type="number" onChange={handleChangeDelay} />
       <ToastContainer pos={pos} />
     </div>
   );
