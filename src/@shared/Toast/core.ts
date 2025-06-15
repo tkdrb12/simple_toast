@@ -30,6 +30,7 @@ class Toast {
         message,
         typeOption,
         delay,
+        status: 'added',
       },
     ];
     this.broadcast();
@@ -40,9 +41,9 @@ class Toast {
     this.broadcast();
   }
 
-  update(id: number, toastItems: ToastItem) {
+  update(id: number, toastItem: Partial<ToastItem>) {
     this.toastItems = this.toastItems.map((item) =>
-      id === item.id ? toastItems : item
+      id === item.id ? { ...item, ...toastItem } : item
     );
     this.broadcast();
   }
