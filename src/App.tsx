@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { ToastContainer, toast } from './@shared/Toast';
-import { TypeOptions } from './@shared/Toast/types';
+import { ToastPos, TypeOptions } from './@shared/Toast/types';
 
 function App() {
+  const [pos, setPos] = useState<ToastPos>('top-right');
+
   const showToastMessage = (
     message: string,
     typeOption?: TypeOptions,
@@ -34,7 +37,15 @@ function App() {
         success
       </button>
       <button onClick={() => clearToast()}>clear</button>
-      <ToastContainer />
+      <select value={pos} onChange={(e) => setPos(e.target.value as ToastPos)}>
+        <option value="top-left">top-left</option>
+        <option value="top-center">top-center</option>
+        <option value="top-right">top-right</option>
+        <option value="bottom-left">bottom-left</option>
+        <option value="bottom-center">bottom-center</option>
+        <option value="bottom-right">bottom-right</option>
+      </select>
+      <ToastContainer pos={pos} />
     </div>
   );
 }
